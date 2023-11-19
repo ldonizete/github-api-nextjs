@@ -1,7 +1,9 @@
 "use client"
 import { nextAuthOptions } from "@/app/api/auth/[...nextauth]/route"
 import { getServerSession } from "next-auth"
+import Link from "next/link";
 import { useState, useEffect } from "react";
+import { MdApartment, MdClose, MdEdit, MdListAlt, MdMail, MdRssFeed } from "react-icons/md";
 
 interface UserData {
     name?: string;
@@ -19,14 +21,15 @@ interface UserData {
 
 
 export default  function Admin(){
-	// const session =  getServerSession(nextAuthOptions)
-    const [userData, setUserData] = useState<UserData | null>(null);
+	  const [userData, setUserData] = useState<UserData | null>(null);
+    const [userName, setUserName] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUserInfo = () => {
-          // Extrair o nome de usuário da URL
+          
           const urlParams = new URLSearchParams(window.location.search);
-          const username = urlParams.get('username'); // Supondo que o parâmetro seja 'username'
+          const username = urlParams.get('username'); 
+          setUserName(username)
     
           // Verificar se o username está presente na URL
           if (username) {
@@ -81,36 +84,44 @@ export default  function Admin(){
                         <span>{userData?.following}</span>
                         <span className="ml-2">Seguindo</span>
                     </div>
-                    <div className="ml-4">
-                        <span>{userData?.public_repos}</span>
-                        <span className="ml-2">Respositorios</span>
+                    <div className="ml-4 ">
+                        <Link className="flex items-center" href={`/repos?username=${userName}`}>
+                          <span>{userData?.public_repos}</span>
+                          <span className="ml-2">Respositorios</span>
+				                  <MdListAlt className="ml-4 "/>
+			                 </Link>
                     </div>
                 </div>
-                <span>Icone Editar</span>
+                <Link href={`/update`}>
+                  <span className="flex items-center"><MdEdit className="mr-2"/> Editar</span>
+			          </Link>
+                
             </div>
-            <textarea 
-                className="w-44 text-black" 
-                value= {userData?.bio}
-                rows={6}
-                cols={50}
-            />
+            
+            <div>
+              <h2 className="text-center text-2xl">Biogarfia</h2>
+              <div className="bg-gray-200 p-5 mt-10 rounded-lg">
+                <p className="text-xl text-gray-800">{userData?.bio}</p>
+              </div>
+            </div>
+            
            
             
-            <div className="flex justify-between mt-14">
-                <div>
-                    <span>icone email</span>
+            <div className="flex justify-between mt-14 absolute bottom-0">
+                <div className="flex items-center">
+                    <span><MdMail/></span>
                     <span>{userData?.email}</span>
                 </div>
-                <div className="ml-4">
-                    <span>icone twitter</span>
+                <div className="ml-4 flex items-center">
+                    <span><MdClose/></span>
                     <span className="ml-2">{userData?.twitter_username}</span>
                 </div>
-                <div className="ml-4">
-                    <span>icone companyr</span>
+                <div className="ml-4 flex items-center">
+                    <span><MdApartment/></span>
                     <span className="ml-2">{userData?.company}</span>
                 </div>
-                <div className="ml-4">
-                    <span>icone blog</span>
+                <div className="ml-4 flex items-center">
+                    <span><MdRssFeed/></span>
                     <span className="ml-2">{userData?.blog}</span>
                 </div>
             </div>
