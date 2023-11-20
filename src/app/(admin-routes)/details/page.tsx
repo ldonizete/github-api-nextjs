@@ -1,6 +1,4 @@
 "use client"
-import { nextAuthOptions } from "@/app/api/auth/[...nextauth]/route"
-import { getServerSession } from "next-auth"
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { MdApartment, MdClose, MdEdit, MdListAlt, MdMail, MdRssFeed } from "react-icons/md";
@@ -31,11 +29,11 @@ export default  function Admin(){
           const username = urlParams.get('username'); 
           setUserName(username)
     
-          // Verificar se o username está presente na URL
           if (username) {
             fetch('http://127.0.0.1:5000/users/userinfo', {
               method: 'POST',
               headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('sessionToken')}`,
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({ username }),
@@ -101,29 +99,43 @@ export default  function Admin(){
             <div>
               <h2 className="text-center text-2xl">Biogarfia</h2>
               <div className="bg-gray-200 p-5 mt-10 rounded-lg">
-                <p className="text-xl text-gray-800">{userData?.bio}</p>
+                <p className="text-xl text-gray-800">
+                  {
+                    userData?.bio ? userData?.bio : "Usuário não tem biografia configurada no Github"
+                  }
+                </p>
               </div>
             </div>
-            
-           
-            
+                      
             <div className="flex justify-between mt-14 absolute bottom-0">
-                <div className="flex items-center">
+              {
+                userData?.email ?
+                <div className="flex items-center text-lg">
                     <span><MdMail/></span>
-                    <span>{userData?.email}</span>
-                </div>
-                <div className="ml-4 flex items-center">
+                    <span className="ml-2">{userData?.email}</span>
+                </div> : ''
+              }
+              {
+                userData?.twitter_username ?
+                <div className="flex items-center text-lg ml-4">
                     <span><MdClose/></span>
                     <span className="ml-2">{userData?.twitter_username}</span>
-                </div>
-                <div className="ml-4 flex items-center">
+                </div> : ''
+              }
+              {
+                userData?.company ?
+                <div className="flex items-center text-lg  ml-4">
                     <span><MdApartment/></span>
                     <span className="ml-2">{userData?.company}</span>
-                </div>
-                <div className="ml-4 flex items-center">
+                </div> : ''
+              }
+                 {
+                userData?.blog ?
+                <div className="flex items-center text-lg  ml-4">
                     <span><MdRssFeed/></span>
                     <span className="ml-2">{userData?.blog}</span>
-                </div>
+                </div> : ''
+              }
             </div>
 		</div>
 	)

@@ -30,6 +30,7 @@ export default  function Admin(){
         fetch('http://127.0.0.1:5000/users/repositories', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('sessionToken')}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ username }),
@@ -45,7 +46,7 @@ export default  function Admin(){
             console.log(userData);
             setTotalRepos(userData.repositories.totalRepositories);
             setRepos(userData.repositories.repositories);
-            setHistoricPosted(true); // Define que os dados foram postados no histórico
+            setHistoricPosted(true); 
           })
           .catch(error => {
             console.error(error);
@@ -65,12 +66,13 @@ export default  function Admin(){
           username: userName,
           status: status,
           repositories: totalRepos,
-          sessionUsername: sessionStorage.getItem('sessionUserName'),
+          sessionUsername: sessionStorage.getItem('sessionUserName') || '',
         };
 
         fetch('http://127.0.0.1:5000/historic', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('sessionToken')}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(data),
@@ -91,7 +93,7 @@ export default  function Admin(){
   }, [historicPosted, userName, status, totalRepos]);
 
 	return (
-		<div className="flex justify-center flex-col items-center">
+		<div className="flex justify-center flex-col items-center mt-16">
       <div className="flex justify-around w-full">
         <div>
          <span className="flex text-2xl">
@@ -111,17 +113,25 @@ export default  function Admin(){
         <h2 className="text-center text-2xl">Lista de Repositórios</h2>
         <ul className="mt-10">
           <hr className="my-2" />
-          {repos.map((repo, index) => (
-            <li key={index} className="mb-4">
-              <Link href={repo.link}>
-                <h3>Titulo: {repo.name}</h3>
-                <p>Descrição: {repo.description ?? 'Sem descrição'}</p>
-                <p>Linguagem: {repo.language ?? 'Não especificada'}</p>
-                <hr className="my-2" />
-              </Link>
-              
-            </li>
-          ))}
+          {
+           totalRepos > 0 ?
+            repos.map((repo, index) => (
+              <li key={index} className="mb-4">
+                <a href={repo.link} target="_blank">
+                  <h3>Titulo: {repo.name}</h3>
+                  <p>Descrição: {repo.description ?? 'Sem descrição'}</p>
+                  <p>Linguagem: {repo.language ?? 'Não especificada'}</p>
+                  <hr className="my-2" />
+                </a>
+                
+              </li>
+          ))
+          :
+          <div>
+            <p className="text-red-700 ml-4 text-2xl">Não foi encontrado nenhum repositório para esse usuário tente pesquisar novamente</p>
+            <hr className="my-2" />
+          </div>    
+        }
         </ul>
       </div>     
 		</div>

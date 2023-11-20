@@ -28,7 +28,10 @@ export default  function Admin(){
 
       if (username) {
         fetch('http://127.0.0.1:5000/historic/lastTwenty', {
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('sessionToken')}`
+          },
           
         })
           .then(response => {
@@ -74,6 +77,9 @@ export default  function Admin(){
     return new Promise((resolve, reject) => {
       fetch(`http://127.0.0.1:5000/historic/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('sessionToken')}`
+        },
       })
       .then(response => {
         if (response.ok) {
@@ -99,15 +105,15 @@ export default  function Admin(){
   }
 
 	return (
-		<div className="flex justify-center flex-col items-center">
-      <div className="flex items-center w-full justify-around mb-40">
+		<div className="flex justify-center flex-col items-center mt-16">
+      <div className="flex items-center w-full justify-around mb-20">
         <h1 className="text-3xl">Total pesquisado {filteredHistoric.length}</h1>
         <Link href={`/admin`}>
           <span className="flex items-center text-2xl"><MdSearch className="mr-2"/> Pesquisar</span>     
         </Link>
       </div>
       <div>
-        <h2 className="text-center text-2xl">Lista de Histórico</h2>
+        <h2 className="text-center text-2xl">Lista de histórico pesquisado</h2>
         <ul className="mt-10">
           <hr className="my-2" />
           {
@@ -127,8 +133,7 @@ export default  function Admin(){
                       <Link href={`/repos?username=${histo.username}`}>
 				                <MdListAlt/>
 			                </Link>
-                    </div>
-                    
+                    </div>                  
                   </div>
                   <button className="flex items-center ml-10" onClick={() => deleteItemAndUpdateList(histo.id)}><MdDelete /> Deletar</button>
                 </div>

@@ -8,6 +8,7 @@ import { SyntheticEvent, useState } from "react";
 export default function Home() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const [error, setError] = useState<boolean>(false);
 
   const router = useRouter()
 
@@ -22,6 +23,7 @@ export default function Home() {
     
     if (result?.error) {
       console.log(result)
+      setError(true);
       return
     }
 
@@ -34,7 +36,7 @@ export default function Home() {
 
       <form className="w-[400px] flex flex-col gap-6" onSubmit={handleSubmit}>
         <input 
-          className="h-12 rounded-md p-2 bg-transparent border border-gray-300"
+          className={`h-12 rounded-md p-2 bg-transparent border ${error ? 'border-red-500' : 'border-gray-300'}`}
           type="text" 
           name="email" 
           placeholder="Digite seu e-mail" 
@@ -42,7 +44,7 @@ export default function Home() {
         />
 
         <input 
-          className="h-12 rounded-md p-2 bg-transparent border border-gray-300"
+          className={`h-12 rounded-md p-2 bg-transparent border ${error ? 'border-red-500' : 'border-gray-300'}`}
           type="password" 
           name="password" 
           placeholder="Digite sua senha" 

@@ -16,6 +16,12 @@ export default async function PrivateLayout({ children }: PrivateLayoutProps){
 	}
 
 	return <>
-	<TopBar imageUrl={session?.user.avatar_url} name={session?.user.name} username={session?.user.userTag} id={session?.user.id}/>
+	<TopBar 
+		imageUrl={session?.user.avatar_url} 
+		name={session?.user.name} 
+		username={session?.user.userTag} 
+		id={session?.user.id}
+		token={session?.user.token}
+	/>
 	{children}</>
 }

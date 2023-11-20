@@ -23,18 +23,17 @@ export default function Home() {
       const response = await fetch(`http://127.0.0.1:5000/users/update/${sessionStorage.getItem('sessionUserNameId')}`, {
         method: 'PUT',
         headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('sessionToken')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       });
 
       if (response.ok) {
-        // A requisição foi bem-sucedida
         console.log('Usuário criado com sucesso!');
-        // Redireciona para a página inicial ('/')
+        
         router.push('/');
       } else {
-        // Se a resposta não estiver ok (ex: erro 404, 500 etc.)
         console.error('Falha ao criar usuário');
       }
     } catch (error) {
@@ -43,7 +42,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen">
+    <div className="flex flex-col items-center w-full h-screen mt-20">
       <h1 className="text-3xl mb-6">Editar Usuário</h1>
 
       <form className="w-[400px] flex flex-col gap-6" onSubmit={handleSubmit}>
